@@ -194,15 +194,26 @@ const utils = {
     }
 
     const path = toQuerystring(query);
+    console.log('window._app.base', window._app.base);
+    console.log('window._app.cache', window._app.cache);
+    console.log(window._app.base === window._app.cache);
     if (window._app.base === window._app.cache) {
-      window.open(`report.html?${path}`);
+      // window.open(`report.html?${path}`);
+      const reportWindow = window.open(`report.html?${path}`);
+      reportWindow._app = window._app;
     } else {
       let appBase = window._app.base;
+      console.log('appBase', appBase);
       if (!appBase) {
         appBase = window.location.origin + window.location.pathname;
+        console.log('new appBase', appBase);
       }
 
-      window.open(`${appBase}report.html?${path}`);
+      console.log(`${appBase}report.html?${path}`);
+
+      // window.open(`${appBase}report.html?${path}`);
+      const reportWindow = window.open(`${appBase}report.html?${path}`);
+      reportWindow._app = window._app;
     }
   },
 
