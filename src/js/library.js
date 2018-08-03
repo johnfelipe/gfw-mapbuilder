@@ -1,6 +1,8 @@
 var MapBuilder = function(args){
 
   this.init = function(constructorParams) {
+    console.log('constructorParams', constructorParams);
+    console.log('');
     var scripts = document.getElementsByTagName('script');
     var newBase;
     for (var j = 0; j < scripts.length; j++) {
@@ -9,13 +11,23 @@ var MapBuilder = function(args){
       }
     }
 
-    newBase = newBase.split(constructorParams.version)[0] + constructorParams.version;
+    // console.log('newBase 1', newBase);
+
+
+    // newBase = newBase.split(constructorParams.version)[0] + constructorParams.version;
+    const basic = newBase.split(constructorParams.version)[0];
+    newBase = `${basic}${basic.substr(basic.length - 1) !== '/' && constructorParams.version[0] !== '/' ? '/' : ''}${constructorParams.version}`;
+    // console.log('no new base for library build!');
+
+    // console.log('newBase 3', newBase);
 
     window._app = {
       cache: constructorParams.version,
       esri: '#{esriVersion}',
-      base: newBase
+      base: constructorParams.version
     };
+
+    console.log('window._app', window._app);
 
     function makePath (base, path) {
       var position = base.length - 1;
@@ -26,10 +38,17 @@ var MapBuilder = function(args){
           base + path
         );
     }
-    constructorParams.cssPath = makePath(newBase, 'css');
-    constructorParams.basePath = newBase;
+    // constructorParams.cssPath = makePath(newBase, 'css');
+    // constructorParams.basePath = newBase;
+    constructorParams.cssPath = makePath(window._app.base, 'css');
+    constructorParams.basePath = window._app.base;
 
-    var base = makePath(newBase);
+    console.log('constructorParams.basePath', constructorParams.basePath);
+
+    // var base = makePath(newBase);
+    var base = makePath(window._app.base);
+
+    console.log('base', base);
 
     window.dojoConfig = {
       parseOnLoad: false,
