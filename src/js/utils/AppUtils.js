@@ -212,7 +212,7 @@ const utils = {
     if(window._app.base === '') {
       appBase = window._app.base;
     } else {
-      appBase = window.location.origin + window.location.pathname.split('external.html')[0];
+      appBase = window.location.origin + window.location.pathname.split('external.html')[0]; //TODO: don't hard-code 'external' !!
     }
 
     if (appBase.slice(-1) !== '/') {

@@ -160,6 +160,7 @@ module.exports = (PATHS) => {
           APP_CSS: `${version}/css/app.css`,
           CRITICAL_CSS: `${version}/css/critical.css`,
           REPORT_CSS: `./css/report.css`,
+          REPORT_LIB: `./reportLib.${version}.js`,
           APP_JS: 'js/main',
           REPORT_JS: `./js/report`,
           DEFAULT_TITLE: 'GFW Mapbuilder',

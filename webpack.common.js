@@ -70,11 +70,17 @@ module.exports = (PATHS) => {
           JQUERY: 'jquery/dist/jquery.min.js',
           APP_JS: 'js/main',
           REPORT_JS: 'js/report',
+          REPORT_LIB: `./libBuild/reportLib.${packageJSON.version}.js`,
           DEFAULT_TITLE: 'GFW Mapbuilder',
           ESRI_VERSION: '3.20'
         }),
         new HtmlWebpackPlugin({
           template: path.resolve(__dirname, 'src/index.pug'),
+          inject: false
+        }),
+        new HtmlWebpackPlugin({
+          template: path.resolve(__dirname, 'src/externalReport.pug'),
+          filename: 'externalReport.html',
           inject: false
         }),
         new HtmlWebpackPlugin({
