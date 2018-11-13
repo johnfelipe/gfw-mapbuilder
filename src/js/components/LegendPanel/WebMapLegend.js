@@ -43,13 +43,20 @@ export default class WebMapLegend extends React.Component {
   }
 
   apiItemMapper(items, type, language) {
+    console.log(items, type, language);
     switch(type) {
       case 'choropleth':
         return items.map((item, i) => {
+          const { name, color, outlineColor } = item;
+          console.log(outlineColor);
             return (
-              <div className='legend-row' key={`webmap-legend-row-${item.name[language]}-${i}`}>
-                <div style={{backgroundColor: item.color, opacity: this.state.opacity}} className='legend-icon'></div>
-                <div className='legend-label'>{item.name[language]}</div>
+              <div className='legend-row' key={`webmap-legend-row-${name[language]}-${i}`}>
+                <div style={{
+                  backgroundColor: color,
+                  border: `1px solid ${outlineColor}`,
+                  opacity: this.state.opacity
+                }} className='legend-icon'></div>
+                <div className='legend-label'>{name[language]}</div>
               </div>
             );
           }
@@ -60,14 +67,71 @@ export default class WebMapLegend extends React.Component {
         return (
           <div>
             <div className='gradient-legend' style={{height: `${18 * items.length}px`, background}}></div>
-            {items.map((item, i) => {
-              return (
-                <div className='legend-row' key={`webmap-legend-row-${item.name[language]}-${i}`}>
-                  <div className='legend-label'>{item.name[language]}</div>
-                </div>
-              );
-            })}
-          </div>
+              {items.map((item, i) => {
+                const name = item.name;
+                return (
+                  <div className='legend-row' key={`webmap-legend-row-${name[language]}-${i}`}>
+                    <div className='legend-label'>{name[language]}</div>
+                  </div>
+                );
+              })}
+            </div>
+          );
+
+      case 'line':
+        return items.map((item, i) => {
+          const { name, color, lineType, width } = item;
+          return (
+            <div className='legend-row' key={`webmap-legend-row-${name[language]}-${i}`}>
+              <div className='legend-icon line'>
+                <div style={{
+                  borderColor: color,
+                  borderWidth: `${width / 2}px`,
+                  borderStyle: lineType,
+                  marginTop: `-${width}px`,
+                  opacity: this.state.opacity
+                }} className='legend-line'></div>
+              </div>
+              <div className='legend-label'>{name[language]}</div>
+            </div>
+          );
+        });
+
+      case 'point':
+        return items.map((item, i) => {
+          const { name, color, outlineColor, size } = item;
+          return (
+            <div className='legend-row' key={`webmap-legend-row-${name[language]}-${i}`}>
+              <div className='legend-icon centered'>
+                <div style={{
+                  backgroundColor: color,
+                  borderColor: outlineColor,
+                  height: `${size}px`,
+                  width: `${size}px`,
+                  marginTop: `-${size / 2 - 2}px`,
+                  opacity: this.state.opacity
+                }} className='legend-point'></div>
+              </div>
+              <div className='legend-label'>{name[language]}</div>
+            </div>
+          );
+        });
+
+      // note: as configured, "basic" is essentially the same as "choropleth"
+      case 'basic':
+        return items.map((item, i) => {
+          const { name, color, outlineColor } = item;
+            return (
+              <div className='legend-row' key={`webmap-legend-row-${name[language]}-${i}`}>
+                <div style={{
+                  backgroundColor: color,
+                  border: `1px solid ${outlineColor}`,
+                  opacity: this.state.opacity
+                }} className='legend-icon'></div>
+                <div className='legend-label'>{name[language]}</div>
+              </div>
+            );
+          }
         );
     }
   }
@@ -94,9 +158,10 @@ export default class WebMapLegend extends React.Component {
         'Displaying loss with {thresh} canopy density.',
         'Tree cover loss is not always deforestation.'
       ],
-      type: 'gradient',
+      type: 'basic',
       items: [{
         color: '#ffffb2',
+        outlineColor: "#000000",
         name: {
           en: '<300',
           fr: '<300',
@@ -108,6 +173,7 @@ export default class WebMapLegend extends React.Component {
         }
         }, {
         color: '#fecc5c',
+        outlineColor: "#000000",
         name: {
           en: '<325',
           fr: '<325',
@@ -119,6 +185,7 @@ export default class WebMapLegend extends React.Component {
         }
         }, {
         color: '#fd8d3c',
+        outlineColor: "#000000",
         name: {
           en: '<350',
           fr: '<350',
@@ -130,6 +197,7 @@ export default class WebMapLegend extends React.Component {
         }
         }, {
         color: '#f03b20',
+        outlineColor: "#000000",
         name: {
           en: '<375',
           fr: '<375',
@@ -141,6 +209,7 @@ export default class WebMapLegend extends React.Component {
         }
         }, {
         color: '#bd0026',
+        outlineColor: "#000000",
         name: {
           en: '<505',
           fr: '<505',
@@ -231,6 +300,86 @@ export default class WebMapLegend extends React.Component {
   //   }]
   // };
 
+  // metadata.legendConfig = {
+  //   "type": "line",
+  //   "name": {
+  //     en: 'Line Legend',
+  //     fr: 'Line Legend',
+  //     es: 'Line Legend',
+  //     pt: 'Line Legend',
+  //     id: 'Line Legend',
+  //     zh: 'Line Legend',
+  //     ka: 'Line Legend'
+  //   },
+  //   "items": [{
+  //     "name": {
+  //       en: 'H5',
+  //       fr: 'H5',
+  //       es: 'H5',
+  //       pt: 'H5',
+  //       id: 'H5',
+  //       zh: 'H5',
+  //       ka: 'H5'
+  //     },
+  //     "color": "#6A1ED2",
+  //     "width": "3",
+  //     "lineType": "double"
+  //     }, {
+  //     "name": {
+  //       en: 'H4',
+  //       fr: 'H4',
+  //       es: 'H4',
+  //       pt: 'H4',
+  //       id: 'H4',
+  //       zh: 'H4',
+  //       ka: 'H4'
+  //     },
+  //     "color": "#DC14DC",
+  //     "width": "2",
+  //     "lineType": "dashed"
+  //    }]
+  //   };
+
+    // metadata.legendConfig = {
+    //   "type": "point",
+    //   "name": {
+    //     en: 'Point Legend',
+    //     fr: 'Point Legend',
+    //     es: 'Point Legend',
+    //     pt: 'Point Legend',
+    //     id: 'Point Legend',
+    //     zh: 'Point Legend',
+    //     ka: 'Point Legend'
+    //   },
+    //   "items": [{
+    //     "name": {
+    //       en: 'Active Fire',
+    //       fr: 'Active Fire',
+    //       es: 'Active Fire',
+    //       pt: 'Active Fire',
+    //       id: 'Active Fire',
+    //       zh: 'Active Fire',
+    //       ka: 'Active Fire'
+    //     },
+    //     "color": "#ff0000",
+    //     "outlineColor": "#000000",
+    //     "size": 12,
+    //     }, {
+    //     "name": {
+    //       en: 'Probable Fire',
+    //       fr: 'Probable Fire',
+    //       es: 'Probable Fire',
+    //       pt: 'Probable Fire',
+    //       id: 'Probable Fire',
+    //       zh: 'Probable Fire',
+    //       ka: 'Probable Fire'
+    //     },
+    //     "color": "#ffff00",
+    //     "outlineColor": "#000000",
+    //     "size": 7
+    //    }]
+    //   };
+
     if (metadata && metadata.legendConfig) {
       const { name, type, items } = metadata.legendConfig;
 
@@ -240,12 +389,12 @@ export default class WebMapLegend extends React.Component {
             {items.map((category, i) => {
               const { name: categoryName, subgroup } = category;
               return (
-                <div className={`parent-legend-container ${!visible && 'hidden'}`} ref='myRef' key={`webmap-legend-${i}`}>
+                <div className={`parent-legend-container ${visible && 'hidden'}`} ref='myRef' key={`webmap-legend-${i}`}>
                   <div className='label-container'>
                     <strong>{categoryName[language]}</strong>
                   </div>
                   <div className='legend-container'>
-                    {category.subgroup.items.length &&
+                    {subgroup.items.length &&
                       <div className='crowdsource-legend'>
                         {this.apiItemMapper(subgroup.items, subgroup.type, language)}
                       </div>}
@@ -256,19 +405,18 @@ export default class WebMapLegend extends React.Component {
           </div>
         );
       }
+
       else {
         return (
-          <div>
-            <div className={`parent-legend-container ${!visible && 'hidden'}`} ref='myRef' key={`webmap-legend-${name[language]}`}>
-              <div className='label-container'>
-                <strong>{name[language]}</strong>
-              </div>
-              <div className='legend-container'>
-                {items.length &&
-                  <div className='crowdsource-legend'>
-                    {this.apiItemMapper(items, type, language)}
-                  </div>}
-              </div>
+          <div className={`parent-legend-container ${visible && 'hidden'}`} ref='myRef' key={`webmap-legend-${name[language]}`}>
+            <div className='label-container'>
+              <strong>{name[language]}</strong>
+            </div>
+            <div className='legend-container'>
+              {items.length &&
+                <div className='crowdsource-legend'>
+                  {this.apiItemMapper(items, type, language)}
+                </div>}
             </div>
           </div>
         );
