@@ -152,7 +152,15 @@ export default class WebMapLegend extends React.Component {
       dataMaxZoom: 12, //control zoom level
       threshold: 30, // optional - loss specific tag to show TCD threshold
       color: '#dc6c9a',
-      name: 'Tree cover loss',
+      name: {
+        en: 'Tree cover loss',
+        fr: 'Tree cover loss',
+        es: 'Tree cover loss',
+        pt: 'Tree cover loss',
+        id: 'Tree cover loss',
+        zh: 'Tree cover loss',
+        ka: 'Tree cover loss'
+      },
       source: '(annual, 30m, global, Hansen/UMD/Google/USGS/NASA)', // optional
       notes: [                                                                                                             // optional
         'Displaying loss with {thresh} canopy density.',
@@ -223,82 +231,86 @@ export default class WebMapLegend extends React.Component {
     ],
     };
 
-  //   metadata.legendConfig = {
-  //     type: 'group',
-  //     items: [{
-  //       name: {
-  //         en: 'Cereals',
-  //         fr: 'Cereals',
-  //         es: 'Cereals',
-  //         pt: 'Cereals',
-  //         id: 'Cereals',
-  //         zh: 'Cereals',
-  //         ka: 'Cereals'
-  //       },
-  //       subgroup: {
-  //         type: 'choropleth',
-  //         items: [{
-  //           name: {
-  //             en: 'Barley',
-  //             fr: 'Barley',
-  //             es: 'Barley',
-  //             pt: 'Barley',
-  //             id: 'Barley',
-  //             zh: 'Barley',
-  //             ka: 'Barley'
-  //           },
-  //           color: '#531332'
-  //         }, {
-  //           name: {
-  //             en: 'Wheat',
-  //             fr: 'Wheat',
-  //             es: 'Wheat',
-  //             pt: 'Wheat',
-  //             id: 'Wheat',
-  //             zh: 'Wheat',
-  //             ka: 'Wheat'
-  //           },
-  //           color: '#c3ff00'
-  //         },
-  //     ]}}, {
-  //     name: {
-  //       en: 'Pulses and legumes',
-  //       fr: 'Pulses and legumes',
-  //       es: 'Pulses and legumes',
-  //       pt: 'Pulses and legumes',
-  //       id: 'Pulses and legumes',
-  //       zh: 'Pulses and legumes',
-  //       ka: 'Pulses and legumes'
-  //     },
-  //     subgroup: {
-  //       type: 'choropleth',
-  //       items: [{
-  //         name: {
-  //           en: 'Soybeans',
-  //           fr: 'Soybeans',
-  //           es: 'Soybeans',
-  //           pt: 'Soybeans',
-  //           id: 'Soybeans',
-  //           zh: 'Soybeans',
-  //           ka: 'Soybeans'
-  //         },
-  //         color: '#42f4f4'
-  //         }, {
-  //           name: {
-  //             en: 'Peas',
-  //             fr: 'Peas',
-  //             es: 'Peas',
-  //             pt: 'Peas',
-  //             id: 'Peas',
-  //             zh: 'Peas',
-  //             ka: 'Peas'
-  //           },
-  //           color: '#f44141'
-  //         },
-  //       ]
-  //     }
-  //   }]
-  // };
+    metadata.legendConfig = {
+      type: 'group',
+      items: [{
+        name: {
+          en: 'Cereals',
+          fr: 'Cereals',
+          es: 'Cereals',
+          pt: 'Cereals',
+          id: 'Cereals',
+          zh: 'Cereals',
+          ka: 'Cereals'
+        },
+        subgroup: {
+          type: 'choropleth',
+          items: [{
+            name: {
+              en: 'Barley',
+              fr: 'Barley',
+              es: 'Barley',
+              pt: 'Barley',
+              id: 'Barley',
+              zh: 'Barley',
+              ka: 'Barley'
+            },
+            color: '#531332',
+            outlineColor: '#aaaaaa'
+          }, {
+            name: {
+              en: 'Wheat',
+              fr: 'Wheat',
+              es: 'Wheat',
+              pt: 'Wheat',
+              id: 'Wheat',
+              zh: 'Wheat',
+              ka: 'Wheat'
+            },
+            color: '#c3ff00',
+            outlineColor: '#aaaaaa'
+          },
+      ]}}, {
+      name: {
+        en: 'Pulses and legumes',
+        fr: 'Pulses and legumes',
+        es: 'Pulses and legumes',
+        pt: 'Pulses and legumes',
+        id: 'Pulses and legumes',
+        zh: 'Pulses and legumes',
+        ka: 'Pulses and legumes'
+      },
+      subgroup: {
+        type: 'choropleth',
+        items: [{
+          name: {
+            en: 'Soybeans',
+            fr: 'Soybeans',
+            es: 'Soybeans',
+            pt: 'Soybeans',
+            id: 'Soybeans',
+            zh: 'Soybeans',
+            ka: 'Soybeans'
+          },
+          color: '#42f4f4',
+          outlineColor: '#aaaaaa'
+          }, {
+            name: {
+              en: 'Peas',
+              fr: 'Peas',
+              es: 'Peas',
+              pt: 'Peas',
+              id: 'Peas',
+              zh: 'Peas',
+              ka: 'Peas'
+            },
+            color: '#f44141',
+            outlineColor: '#aaaaaa'
+          },
+        ]
+      }
+    }]
+  };
 
   // metadata.legendConfig = {
   //   "type": "line",
