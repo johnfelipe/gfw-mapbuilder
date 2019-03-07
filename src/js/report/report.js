@@ -698,6 +698,25 @@ const renderResults = (results, lang, config, params) => {
             timelineEndLabel={text[lang].TIMELINE_END}
           />;
           break;
+        case 'FRAGMENTATION':
+          console.log('results', results);
+          console.log('config', config);
+          // results.startYearValue = startCount;
+          // results.totalRangeValue = totalCount;
+          const diff = results.totalRangeValue - results.startYearValue;
+          // debugger
+
+          console.log('diff', diff);
+          const style = {
+            borderColor: 'purple',
+            color: 'purple'
+          };
+          chartComponent = <div className='results__badge' style={style}>
+            <div className='results__badge-label'>Frag Loss {config.startYear}-{config.endYear}</div>
+            <div className='results__badge-value'>{diff.toFixed(3)}</div>
+          </div>;
+
+          break;
         default:
           chartComponent = <Badge results={results} valueAttribute={valueAttribute} color={color} label={badgeLabel[lang]} />;
 
@@ -885,34 +904,121 @@ const runAnalysis = function runAnalysis (params, feature) {
       analysisUtils.getCustomAnalysis(module, uiParamsToAppend).then(results => {
 
         const chartComponent = renderResults(results, language, module, params);
+        //this.renderResults(analysisId, results, language, analysisSettings);
         const moduleDiv = document.getElementById(module.analysisId + '_div');
         ReactDOM.render(chartComponent, moduleDiv);
       });
       return;
     }
 
-    esriRequest({
-      url: module.analysisUrl,
-      callbackParamName: 'callback',
-      content: uiParamsToAppend,
-      handleAs: 'json',
-      timeout: 30000
-    }, { usePost: false }).then(results => {
-      const div = document.createElement('div');
-      div.id = module.analysisId;
-      div.classList.add('results-chart');
-      resultsContainer.appendChild(div);
+    if (module.analysisId === 'FRAGMENTATION') {
+      console.log('feature', feature);
+      // debugger
 
-      const chartComponent = renderResults(results, language, module, params);
+      // if (feature.geometry.spatialReference.isWebMercator()) {
+      //   feature.geometry = webmercatorUtils.webMercatorToGeographic(feature.geometry);
+      // }
 
-      if (!chartComponent) {
-        div.remove();
-      } else {
-        ReactDOM.render(chartComponent, div);
-      }
-    }, (error) => {
-      console.error(error);
-    });
+      const geojson = geojsonUtil.arcgisToGeoJSON(feature.geometry);
+
+      const content = {
+        polygon: geojson.coordinates
+      };
+
+      fetch(
+        module.analysisUrl,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(content)
+        }
+      ).then(results => {
+        console.log('results', results);
+
+        if (results.json) {
+          results.json().then(newRes => {
+            console.log('newResss', newRes);
+            console.log('uiParamsToAppend.period', uiParamsToAppend.period);
+            const dates = uiParamsToAppend.period.split(',');
+
+            const startYear = dates[0].split('-')[0];
+            const endYear = dates[1].split('-')[0];
+            module.startYear = parseInt(startYear);
+            module.endYear = parseInt(endYear);
+            let startCount;
+            let totalCount = 0;
+            console.log('module.startYear', module.startYear);
+            console.log('module.endYear', module.endYear);
+            Object.keys(newRes).forEach(year => {
+              console.log(year, typeof year);
+              if (parseInt(year) === module.startYear) {
+                console.log('');
+                startCount = newRes[year];
+                console.log('startCount', startCount);
+              } else if (parseInt(year) > module.startYear && parseInt(year) <= module.endYear) {
+                totalCount += newRes[year];
+              }
+            });
+            newRes.startYearValue = startCount;
+            newRes.totalRangeValue = totalCount;
+
+            const div = document.createElement('div');
+            div.id = module.analysisId;
+            div.classList.add('results-chart');
+            resultsContainer.appendChild(div);
+
+            const chartComponent = renderResults(newRes, language, module, params);
+
+            if (!chartComponent) {
+              div.remove();
+            } else {
+              ReactDOM.render(chartComponent, div);
+            }
+            // this.setState({ isLoading: false });
+            // this.renderResults(analysisId, newRes, language, analysisSettings);
+            // this.renderResults(analysisId, newRes, language, module);
+          });
+        }
+
+      }, (error) => {
+        console.log('nahh', error);
+        // this.setState({
+        //   isLoading: false,
+        //   results: {
+        //     error: error,
+        //     message: 'An error occured performing selected analysis. Please select another analysis or try again later.'
+        //   },
+        // }, () => {
+          // this.renderResults(analysisId, this.state.results, language, analysisSettings);
+        // });
+      });
+    } else {
+
+      esriRequest({
+        url: module.analysisUrl,
+        callbackParamName: 'callback',
+        content: uiParamsToAppend,
+        handleAs: 'json',
+        timeout: 30000
+      }, { usePost: false }).then(results => {
+        const div = document.createElement('div');
+        div.id = module.analysisId;
+        div.classList.add('results-chart');
+        resultsContainer.appendChild(div);
+
+        const chartComponent = renderResults(results, language, module, params);
+
+        if (!chartComponent) {
+          div.remove();
+        } else {
+          ReactDOM.render(chartComponent, div);
+        }
+      }, (error) => {
+        console.error(error);
+      });
+    }
   });
 };
 
